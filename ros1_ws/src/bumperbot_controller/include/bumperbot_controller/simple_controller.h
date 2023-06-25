@@ -6,6 +6,7 @@
 #include <Eigen/Core>
 #include <sensor_msgs/JointState.h>
 #include <nav_msgs/Odometry.h>
+#include <geometry_msgs/TransformStamped.h>
 
 class SimpleController
 {
@@ -38,6 +39,8 @@ private:
     double x_;
     double y_;
     double theta_;
+
+    geometry_msgs::TransformStamped transform_stamped_;
 };
 
 #endif 

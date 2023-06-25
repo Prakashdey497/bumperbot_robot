@@ -1,0 +1,9 @@
+<launch> 
+    <include ns="Gazebo" file="$(find rospy_tutorials)/003_listener_with_user_data/listener_with_user_data.launch" /> 
+
+    <include ns="Controller" file="$(find rospy_tutorials)/003_listener_with_user_data/listener_with_user_data.launch" />
+
+    <include ns="bumperbot_ekf" file="$(find rospy_tutorials)/003_listener_with_user_data/listener_with_user_data.launch" /> 
+
+    <include ns="bumperbot_odom" file="$(find rospy_tutorials)/003_listener_with_user_data/listener_with_user_data.launch" /> 
+</launch>

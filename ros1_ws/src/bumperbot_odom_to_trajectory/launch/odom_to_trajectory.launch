@@ -1,0 +1,13 @@
+<launch>
+    <arg name="max_list_append" default="1000"/>
+
+    <node name="path_odom_plotter_nodes" pkg="bumperbot_odom_to_trajectory" type="path_odom_plotter_nodes.py" output="screen" respawn="true">
+        <param name="max_list_append"     value="$(arg max_list_append)"/>  
+    </node>
+
+    <node name="path_ekf_plotter_nodes" pkg="bumperbot_odom_to_trajectory" type="path_ekf_plotter_nodes.py" output="screen" respawn="true">
+        <param name="max_list_append"     value="$(arg max_list_append)"/>  
+    </node>
+
+
+</launch>

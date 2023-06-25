@@ -10,6 +10,7 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import TransformStamped
 
 import tf_conversions
+from tf2_ros import TransformBroadcaster
 
 
 class SimpleController(object):
@@ -49,6 +50,11 @@ class SimpleController(object):
         self.odom_msg_.pose.pose.orientation.z = 0.0
         self.odom_msg_.pose.pose.orientation.w = 1.0
         
+        # Fill the TF message
+        self.br_ = TransformBroadcaster()
+        self.transform_stamped_ = TransformStamped()
+        self.transform_stamped_.header.frame_id = "odom"
+        self.transform_stamped_.child_frame_id = "base_footprint"
 
     def velCallback(self, msg):
         # Implements the differential kinematic model
@@ -121,7 +127,15 @@ class SimpleController(object):
                                             0   , 0     , 0     , 1e6  ,   0,    0,
                                             0   , 0     , 0     , 0    ,   1e6,  0,
                                             0   , 0     , 0     , 0    ,   0  ,  1e3]
-        
         self.odom_pub_.publish(self.odom_msg_)
         
         
+        # TF
+        self.transform_stamped_.transform.translation.x = self.x_
+        self.transform_stamped_.transform.translation.y = self.y_
+        self.transform_stamped_.transform.rotation.x = q[0]
+        self.transform_stamped_.transform.rotation.y = q[1]
+        self.transform_stamped_.transform.rotation.z = q[2]
+        self.transform_stamped_.transform.rotation.w = q[3]
+        self.transform_stamped_.header.stamp = rospy.Time.now()
+        self.br_.sendTransform(self.transform_stamped_)

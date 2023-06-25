@@ -35,6 +35,9 @@ SimpleController::SimpleController(const ros::NodeHandle &nh,
     odom_msg_.pose.pose.orientation.z = 0.0;
     odom_msg_.pose.pose.orientation.w = 1.0;
 
+    transform_stamped_.header.frame_id = "odom";
+    transform_stamped_.child_frame_id = "base_footprint";
+
 }
 
 void SimpleController::velCallback(const geometry_msgs::Twist &msg)
@@ -99,7 +102,6 @@ void SimpleController::jointCallback(const sensor_msgs::JointState &state)
     odom_msg_.twist.twist.linear.x = linear;
     odom_msg_.twist.twist.angular.z = angular;
 
-
     odom_msg_.twist.covariance[0] = 1e-9;
     odom_msg_.twist.covariance[7] = 1e-3;
     odom_msg_.twist.covariance[8] = 1e-9;
@@ -116,7 +118,18 @@ void SimpleController::jointCallback(const sensor_msgs::JointState &state)
     odom_msg_.pose.covariance[28] = 1e6;
     odom_msg_.pose.covariance[35] = 1e3;
     
-    
-
     odom_pub_.publish(odom_msg_);
+
+
+
+    // TF
+    static tf2_ros::TransformBroadcaster br;
+    transform_stamped_.transform.translation.x = x_;
+    transform_stamped_.transform.translation.y = y_;
+    transform_stamped_.transform.rotation.x = q.getX();
+    transform_stamped_.transform.rotation.y = q.getY();
+    transform_stamped_.transform.rotation.z = q.getZ();
+    transform_stamped_.transform.rotation.w = q.getW();
+    transform_stamped_.header.stamp = ros::Time::now();
+    br.sendTransform(transform_stamped_);
 }
